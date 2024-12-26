@@ -1,4 +1,4 @@
-# 사이버보안 *Cyber Security*
+# 🔐 사이버보안 *Cyber Security* 🛡
 Repository for preparing lectures
 - By default, the commands are executed as a root user.
 
@@ -45,10 +45,10 @@ vim /etc/netplan/config.yaml
 >networks:
 >  ethernets:
 >    ens33:
->      addresses: [10.10.10.12/24]
+>      addresses: [10.10.10.10/24]
 >      gateway4: 10.10.10.1
 >      nameservers:
->        addresses: [10.10.10.1]
+>        addresses: [10.10.10.12]
 >      dhcp4: false
 >  version: 2
 >```
@@ -174,7 +174,6 @@ a2dismod autoindex
 : Yes, do as I say!   ### 이거 입력해야 비활성화 됨(;;;)
 a2dismod negotiation
 : Yes, do as I say!
-systemctl restart apache2
 ```
 - No access to parent directory
 ```vim
@@ -200,7 +199,7 @@ vim /etc/apache2/sites-available/000-default.conf
 >```
 ```vim
 a2enmod headers
-systemctl restart sshd
+systemctl restart apache2
 ```
 ### < 확인 *Checking* >
 ```vim
@@ -214,3 +213,39 @@ apache2ctl -M | grep –E "autoindex|negotiation"
 ## 4. 로드밸런싱 구성 (Load-Balancing configuration)
 
 ## 5. DNS 구성 (DNS configuration)
+### < 구성 *Configuration* >
+- [ dns01 ]
+```vim
+apt install -y bind9
+```
+```vim
+vim /etc/bind/named.conf.local
+```
+>```vim
+>zone "web-server.com" {
+>  type master;
+>  file "/etc/bind/db.web-server.com";
+>};
+>```
+```vim
+cp /etc/bind/db.local /etc/bind/db.web-server.com
+chown bind:bind -R /etc/bind/
+sed -i "s/localhost/web-server.com/g" /etc/bind/db.web-server.com
+```
+```vim
+vim /etc/bind/db.web-server.com
+```
+>```vim
+>@  IN  NS  ns.web-server.com.
+>ns  IN  A  10.10.30.13
+>lb01  IN  A  10.10.30.13
+>web-server.com.  IN  A  10.10.30.13
+>```
+```vim
+systemctl restart bind9
+```
+### < 확인 *Checking* >
+- [ client01 ]
+```vim
+nslookup web-server.com
+```
