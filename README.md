@@ -1,5 +1,5 @@
 # 🔐 사이버보안 *Cyber Security* 🛡
-Repository for preparing lectures
+###### Repository for preparing lectures [ *Written by NullBins* ]
 - By default, the commands are executed as a root user.
 
 ## 1. IPv6 프로토콜 제거 (Disable IPv6 protocol)
