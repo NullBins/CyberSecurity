@@ -234,6 +234,9 @@ systemctl restart haproxy
 ### < 확인 *Checking* >
 - [ client01 ] Firefox
 > ![Image](https://github.com/NullBins/CyberSecurity/blob/main/Images/Firefox_web.png)
+```vim
+lynx http://10.10.30.13
+```
 
 ## 5. DNS 구성 (DNS configuration)
 ### < 구성 *Configuration* >
