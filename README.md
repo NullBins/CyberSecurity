@@ -208,7 +208,16 @@ apache2ctl -M | grep –E "autoindex|negotiation"
 
 ## &nbsp; 5) 데이터베이스 서버 보안 설정 [DB server security settings.]
 ### < 구성 *Configuration* >
+- [ db01 ]
+```vim
+apt install -y postgresql
+```
+
 ### < 확인 *Checking* >
+- [ web01 ]
+```vim
+psql –h 10.10.30.12 –U dbadmin –W –d account_info
+```
 
 ## 4. 로드밸런싱 구성 (Load-Balancing configuration)
 ### < 구성 *Configuration* >
