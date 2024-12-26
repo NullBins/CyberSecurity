@@ -211,6 +211,29 @@ apache2ctl -M | grep –E "autoindex|negotiation"
 ### < 확인 *Checking* >
 
 ## 4. 로드밸런싱 구성 (Load-Balancing configuration)
+### < 구성 *Configuration* >
+- [ lb01 ] Round Robin
+```vim
+apt install -y haproxy
+```
+```vim
+vim /etc/haproxy/haproxy.cfg
+```
+>```vim
+>frontend front_http
+>  bind *:80
+>  default_backend back_http
+>backend back_http
+>  balance roundrobin
+>  server web01 10.10.30.10:80 check
+>  server web02 10.10.30.11:80 check
+>```
+```vim
+systemctl restart haproxy
+```
+### < 확인 *Checking* >
+- [ client01 ] Firefox
+> ![Image](https://github.com/NullBins/CyberSecurity/blob/main/Images/Firefox_web.png)
 
 ## 5. DNS 구성 (DNS configuration)
 ### < 구성 *Configuration* >
