@@ -3,3 +3,4 @@
 - By default, the commands are executed as a root user.
 
 # [Project-2] <*Network security device settings*>
+>![Image](https://github.com/NullBins/CyberSecurity/blob/main/Images/Network_topology.png)
