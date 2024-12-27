@@ -38,7 +38,7 @@ sed -i "s/<Original hostname>/<Hostname to change>/g" /etc/hosts
 * IPv4 Address (All hosts)
 ```bash
 mv /etc/netplan/*.yaml /etc/netplan/config.yaml   ### 채점기준에 요구되는 파일명으로 변경
-ip link show   ### 인터페이스 확인 (ens33 ~ 4 . . . | vmware)
+ip link show   ### 인터페이스 확인 (ens33 ~ 4 . . . | VMware)
 ```
 ```vim
 vim /etc/netplan/config.yaml
