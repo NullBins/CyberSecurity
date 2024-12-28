@@ -2,7 +2,7 @@
 ###### Repository for preparing lectures [ *Written by NullBins* ]
 - By default, the commands are executed as a root user.
 
-# [Project-1] <*Infrastructure configuration & Security enhancements*>
+# [Project-1] < *Infrastructure configuration & Security enhancements* >
 
 ## 1. IPv6 프로토콜 제거 (Disable IPv6 protocol)
 ### < *Configuration* >
