@@ -194,9 +194,15 @@ apt install -y krb5-user samba-common-bin sssd realmd sssd-tools adcli
  3) ns.nicekorea.com
 realm discover nicekorea.com
 realm join --user=cyber nicekorea.com
+systemctl start sssd
+systemctl enable sssd
 ```
 ### < *Checking* >
 - [ ns ]
 ```powershell
 dsa.msc
+```
+- [ www1 ]
+```vim
+id kim@nicekorea.com
 ```
