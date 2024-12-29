@@ -2,7 +2,7 @@
 ###### Repository for preparing lectures [ *Written by NullBins* ]
 - By default, the commands are executed as a root user.
 
-# [Project-1] < *Infrastructure configuration & Security enhancements* >
+# [ *Project-1* ] <*Infrastructure configuration & Security enhancements*>
 
 ## 1. IPv6 프로토콜 제거 (Disable IPv6 protocol)
 ### < *Configuration* >
@@ -154,12 +154,12 @@ iptables -A INPUT -p tcp --dport 22312 -j DROP
 iptables -A INPUT -s 10.10.10.10/32 -p tcp --dport 22312 -j ACCEPT
 iptables -A INPUT -p tcp --dport 80 -j ACCEPT
 iptables -A INPUT -p tcp --dport 443 -j ACCEPT
-iptables -A FORWARD -i ens33(eth0) -o ens34(eth1) -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -A FORWARD -i ens33 -o ens34 -m state --state ESTABLISHED,RELATED -j ACCEPT
 iptables -A FORWARD -i ens34 -o ens33 -j ACCEPT
 ```
 - NAT settings
 ```vim
-iptables -t nat -A POSTROUTING -o ens34(eth1) -j MASQUERADE
+iptables -t nat -A POSTROUTING -o ens34 -j MASQUERADE
 ```
 - Save settings
 ```vim
@@ -183,7 +183,7 @@ apt install -y apache2
 a2dismod autoindex
 : Yes, do as I say!   ### 이거 입력해야 비활성화 됨;;
 a2dismod negotiation
-: Yes, do as I say!
+: Yes, do as I say!   ### 응, 내 말대로 해!
 ```
 - No access to parent directory
 ```vim
