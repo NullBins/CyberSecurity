@@ -156,7 +156,7 @@ apt install -y isc-dhcp-relay
 vim /etc/default/isc-dhcp-relay
 ```
 >```vim
->SERVERS="172.20.200.101"
+>SERVERS="201.10.20.2"
 >```
 ```vim
 systemctl restart isc-dhcp-relay
