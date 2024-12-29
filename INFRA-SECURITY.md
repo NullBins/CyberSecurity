@@ -186,6 +186,15 @@ dsadd user cn=mgr01,ou=managers,dc=nicekorea,dc=com -pwd Cyber2023\$\$ -memberof
 dsadd user cn=mgr02,ou=managers,dc=nicekorea,dc=com -pwd Cyber2023\$\$ -memberof cn=managers,ou=managers,dc=nicekorea,dc=com
 dsadd user cn=webadmin,ou=webs,dc=nicekorea,dc=com -pwd Cyber2023\$\$ -memberof cn=webs,ou=webs,dc=nicekorea,dc=com
 ```
+- [ www1, www2 ] Join AD Domain
+```vim
+apt install -y krb5-user samba-common-bin sssd realmd sssd-tools adcli
+ 1) NICEKOREA.COM
+ 2) ns.nicekorea.com
+ 3) ns.nicekorea.com
+realm discover nicekorea.com
+realm join --user=cyber nicekorea.com
+```
 ### < *Checking* >
 - [ ns ]
 ```powershell
