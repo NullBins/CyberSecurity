@@ -180,31 +180,109 @@ New-ADOrganizationalUnit -Name Webs
 New-ADGroup -GroupScope Global Sales -Path "ou=Sales,dc=nicekorea,dc=com"
 New-ADGroup -GroupScope Global Managers -Path "ou=Managers,dc=nicekorea,dc=com"
 New-ADGroup -GroupScope Global Webs -Path "ou=Webs,dc=nicekorea,dc=com"
-dsadd user cn=kim,ou=sales,dc=nicekorea,dc=com -pwd Cyber2023\$\$ -memberof cn=sales,ou=sales,dc=nicekorea,dc=com
-dsadd user cn=park,ou=sales,dc=nicekorea,dc=com -pwd Cyber2023\$\$ -memberof cn=sales,ou=sales,dc=nicekorea,dc=com
-dsadd user cn=mgr01,ou=managers,dc=nicekorea,dc=com -pwd Cyber2023\$\$ -memberof cn=managers,ou=managers,dc=nicekorea,dc=com
-dsadd user cn=mgr02,ou=managers,dc=nicekorea,dc=com -pwd Cyber2023\$\$ -memberof cn=managers,ou=managers,dc=nicekorea,dc=com
-dsadd user cn=webadmin,ou=webs,dc=nicekorea,dc=com -pwd Cyber2023\$\$ -memberof cn=webs,ou=webs,dc=nicekorea,dc=com
+dsadd user cn=kim,ou=sales,dc=nicekorea,dc=com -pwd 'Cyber2023$$' -memberof cn=sales,ou=sales,dc=nicekorea,dc=com
+dsadd user cn=park,ou=sales,dc=nicekorea,dc=com -pwd 'Cyber2023$$' -memberof cn=sales,ou=sales,dc=nicekorea,dc=com
+dsadd user cn=mgr01,ou=managers,dc=nicekorea,dc=com -pwd 'Cyber2023$$' -memberof cn=managers,ou=managers,dc=nicekorea,dc=com
+dsadd user cn=mgr02,ou=managers,dc=nicekorea,dc=com -pwd 'Cyber2023$$' -memberof cn=managers,ou=managers,dc=nicekorea,dc=com
+dsadd user cn=webadmin,ou=webs,dc=nicekorea,dc=com -pwd 'Cyber2023$$' -memberof cn=webs,ou=webs,dc=nicekorea,dc=com
 ```
 - [ www1, www2 ] - Join AD Domain
 ```vim
-apt install -y krb5-user samba-common-bin sssd realmd sssd-tools adcli
+apt install -y realmd sssd sssd-tools adcli krb5-user packagekit samba-common-bin
  1) NICEKOREA.COM
  2) ns.nicekorea.com
  3) ns.nicekorea.com
+```
+```vim
+vim /etc/krb5.conf
+```
+>```vim
+>[libdefaults]
+>    default_realm = NICEKOREA.COM
+>    dns_lookup_realm = false
+>    dns_lookup_kdc = true
+>
+>[realms]
+>    NICEKOREA.COM = {
+>        kdc = ns.nicekorea.com
+>        admin_server = ns.nicekorea.com
+>    }
+>
+>[domain_realm]
+>    .nicekorea.com = NICEKOREA.COM
+>    nicekorea.com = NICEKOREA.COM
+>```
+```vim
 realm discover nicekorea.com
 realm join --user=cyber nicekorea.com
 systemctl start sssd
 systemctl enable sssd
+echo -e "session optional pam_mkhomedir.so skel=/etc/skel umask=0022" >> /etc/pam.d/common-session
+pam-auth-update
 ```
 - [ ns ] - Add DNS Record
 ```powershell
-Add-DnsServerResourceRecord -A -ZoneName nicekorea.com -Name www -IPv4Address 172.20.200.101
-Add-DnsServerResourceRecord -A -ZoneName nicekorea.com -Name intra -IPv4Address 172.20.200.101
-Add-DnsServerResourceRecord -A -ZoneName nicekorea.com -Name shop -IPv4Address 172.20.200.101
-Add-DnsServerResourceRecord -A -ZoneName nicekorea.com -Name dlp -IPv4Address 172.20.200.101
-Add-DnsServerResourceRecord -A -ZoneName nicekorea.com -Name smtp -IPv4Address 172.20.200.103
-Add-DnsServerResourceRecord -A -ZoneName nicekorea.com -Name imap -IPv4Address 172.20.200.103
+"www","intra","shop","dlp" | %{Add-DnsServerResourceRecord -A -ZoneName nicekorea.com -Name $_ -IPv4Address 172.20.200.101}
+"smtp","imap" | %{Add-DnsServerResourceRecord -A -ZoneName nicekorea.com -Name $_ -IPv4Address 172.20.200.103}
+Add-DnsServerResourceRecord -MX -ZoneName nicekorea.com -Name "." -MailExchange "smtp.nicekorea.com" -Preference 10
+Add-DnsServerResourceRecord -MX -ZoneName nicekorea.com -Name "." -MailExchange "imap.nicekorea.com" -Preference 10
+```
+- [ ex-ns ]
+```vim
+apt install -y bind9
+```
+```vim
+vim /etc/bind/named.conf
+```
+>```vim
+>#include "/etc/bind/named.conf.options";
+>#include "/etc/bind/named.conf.local";
+>#include "/etc/bind/named.conf.default-zones";
+>
+>options {
+> directory "/var/cache/bind";
+> listen-on { any; };
+> allow-query { any; };
+> recursion no;
+> dnssec-validation no;
+>};
+>
+>zone "global.com" {
+> type master;
+> file "db.global.com";
+>};
+>
+>zone "nicekorea.com" {
+> type master;
+> file "db.nicekorea.com";
+>};
+>```
+```vim
+cp /etc/bind/db.0 /var/cache/bind/db.global.com
+cp /etc/bind/db.0 /var/cache/bind/db.nicekorea.com
+chown bind:bind -R /var/cache/bind/
+sed -i "s/localhost/global.com/g" /var/cache/bind/db.global.com
+sed -i "s/localhost/nicekorea.com/g" /var/cache/bind/db.nicekorea.com
+```
+```vim
+vim /var/cache/bind/db.global.com
+```
+>```vim
+>@   IN   NS   dns.global.com
+>ex-ns   IN   A   201.10.20.2
+>dns   IN   A   201.10.20.2
+>```
+```vim
+vim /var/cache/bind/db.nicekorea.com
+```
+>```vim
+>@   IN   NS   global.com
+>@   IN   A   201.10.20.2
+>vpn   IN   A   201.10.10.1
+>security   IN   A   201.10.10.1
+>```
+```vim
+systemctl restart bind9
 ```
 ### < *Checking* >
 - [ ns ]
@@ -214,4 +292,6 @@ dsa.msc
 - [ www1 ]
 ```vim
 id kim@nicekorea.com
+groups kim@nicekorea.com
+login kim@nicekorea.com
 ```
