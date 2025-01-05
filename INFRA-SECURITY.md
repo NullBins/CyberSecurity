@@ -295,3 +295,105 @@ id kim@nicekorea.com
 groups kim@nicekorea.com
 login kim@nicekorea.com
 ```
+
+## 4. Web 서비스 및 프록시 구성 (Web service & Proxy configuration)
+### < *Configuration* >
+- [ www1, www2 ]
+```vim
+apt install -y apache2 libapache2-mod-auth-kerb
+```
+```vim
+a2dissite 000-default.conf
+cp /etc/apache2/sites-available/000-default.conf /etc/apache2/sites-available/www.conf
+cp /etc/apache2/sites-available/000-default.conf /etc/apache2/sites-available/intra.conf
+cp /etc/apache2/sites-available/000-default.conf /etc/apache2/sites-available/shop.conf
+```
+```vim
+vim /etc/apache2/posts.conf
+```
+>```vim
+>Listen 8888
+>Listen 9000
+>Listen 9090
+>```
+```vim
+vim /etc/apache2/sites-available/www.conf
+```
+>```vim
+><VirtualHost *:9000>
+> ServerName www.nicekorea.com
+> DocumentRoot /var/www/html/main
+></VirtualHost>
+>```
+```vim
+vim /etc/apache2/sites-available/shop.conf
+```
+>```vim
+><VirtualHost *:8888>
+> ServerName shop.nicekorea.com
+> DocumentRoot /var/www/html/shop
+></VirtualHost>
+>```
+```vim
+vim /etc/apache2/sites-available/intra.conf
+```
+>```vim
+><VirtualHost *:9090>
+> ServerName intra.nicekorea.com
+> DocumentRoot /var/www/html/intra
+> <Directory /var/www/html/intra>
+>  AuthType Kerberos
+>  AuthName "Kerberos Authentication"
+>  Krb5KeyTab /etc/krb5.keytab
+>  KrbAuthRealms NICEKOREA.COM
+>  KrbServiceName HTTP/intra.nicekorea.com@NICEKOREA.COM
+>  KrbVerifyKDC off
+> </Directory>
+> LogLevel auth_kerb:debug
+></VirtualHost>
+>```
+```vim
+mkdir -p /var/www/html/{main,intra,shop}
+echo -e "사내 게시판 입니다." > /var/www/html/intra/index.html
+echo -e "nicekorea.com 입니다." > /var/www/html/main/index.html
+echo -e "shop 페이지 입니다." > /var/www/html/shop/index.html
+a2ensite www.conf
+a2ensite intra.conf
+a2ensite shop.conf
+systemctl restart apache2
+```
+- [ dlp ]
+```vim
+apt install -y haproxy
+```
+```vim
+vim /etc/haproxy/haproxy.cfg
+```
+>```vim
+>frontend front_www
+> bind *:9000
+> default_backend back_www
+>
+>backend back_www
+> server www1 172.20.200.103:9000 check
+> server www2 172.20.200.104:9000 check
+>
+>frontend front_intra
+> bind *:9090
+> default_backend back_intra
+>
+>backend back_intra
+> server www1 172.20.200.103:9090 check
+> server www2 172.20.200.104:9090 check
+>
+>frontend front_shop
+> bind *:8888
+> default_backend back_shop
+>
+>backend back_intra
+> server www1 172.20.200.103:8888 check
+> server www2 172.20.200.104:8888 check
+>```
+```vim
+systemctl restart haproxy
+```
