@@ -103,7 +103,7 @@ systemctl restart sshd
 ```vim
 ssh -p 22312 (web,db,lb,fw)admin@(db01,lb01,fw01,web01~2_address)
 ```
-> ![Image](https://github.com/NullBins/CyberSecurity/blob/main/Images/SSH.png)
+> ![Image](https://github.com/NullBins/CyberSecurity/blob/main/IMAGES/SSH.png)
 
 ## &nbsp; 2) 사용자 및 권한 관리 [User permission management.]
 ### < *Configuration* >
@@ -280,7 +280,7 @@ systemctl restart haproxy
 ```
 ### < *Checking* >
 - [ client01 ] Firefox
-> ![Image](https://github.com/NullBins/CyberSecurity/blob/main/Images/Firefox_web.png)
+> ![Image](https://github.com/NullBins/CyberSecurity/blob/main/IMAGES/Firefox_web.png)
 ```vim
 lynx http://10.10.30.13
 ```
