@@ -201,6 +201,7 @@ vim /etc/krb5.conf
 >    default_realm = NICEKOREA.COM
 >    dns_lookup_realm = false
 >    dns_lookup_kdc = true
+>    canonicalize = false
 >
 >[realms]
 >    NICEKOREA.COM = {
