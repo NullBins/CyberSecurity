@@ -1,5 +1,5 @@
 # 🔐 사이버보안 *Cyber Security* 🛡
-###### Repository for preparing lectures [ *Written by NullBins* ]
+###### 📚 Repository for preparing lectures [ *Written by NullBins* ]
 - By default, the commands are executed as a root user.
 
 # [ *Project-1* ] <*Infrastructure configuration & Security enhancements*>
