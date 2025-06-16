@@ -44,7 +44,7 @@ ip link show   ### 인터페이스 확인 (ens33 ~ 4 . . . | VMware)
 vim /etc/netplan/config.yaml
 ```
 >```yaml
->networks:
+>network:
 >  ethernets:
 >    ens33:
 >      addresses: [10.10.10.10/24]
